@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="/sample/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+    crossorigin="anonymous">
+    <style>
+      #form-body{
+        height: 325px;
+        margin-top: 210px;
+      }
+      </style>
+</head>
+<body>
+<div id ="main">
+  <div id = "canvas" > 
+    <div id="form-body">
+      <h2> Login form </h2>
+      <h3 style="color:red;">{{msg}}</h3>
+      <form action="" method="post">
+      <!-- Note: class="mb-3" is a Bootstrap spacing utility that controls vertical spacing between divisions in the form. 
+       "mb-3" maps to a preset size. -->    
+        <div class="mb-3">
+          <!-- Note: class="form-label" is a Bootstrap class that applies consistent styling to <label>. -->
+          <!-- Note: class="form-control" is a Bootstrap form class for inputs. 
+          It controls border, font, styles, etc.. so all inputs look consistent. -->
+          <label for="login_form_Input1" class="form-label">Username</label>
+          <input type="text" class="form-control" id="login_form_Input1" placeholder="username, ex: john_doe123">
+        </div>
+        <div class="mb-3">
+          <label for="login_form_Input2" class="form-label">Password</label>
+          <input type="password" class="form-control" id="login_form_Input2" placeholder="********">
+        </div>
+        <div class="text-center"> 
+          <input type="submit" class="btn btn-primary" value="Login"><br>
+          Do you have an account? <a href="{{url_for('register')}}">Register</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
