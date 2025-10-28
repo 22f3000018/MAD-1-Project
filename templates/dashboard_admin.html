@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+  <div id="main">
+    <div id="canvas">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Welcome Admin</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/login">logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+      <div id="content" class="container py-3">
+        <!-- Search Bar -->
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="doctor, patient, department...">
+              <button class="btn btn-outline-primary" type="button">search</button>
+            </div>
+          </div>
+          <div class="col-md-4 text-end">
+            <a href="/create-new" class="btn btn-success">Add new doctor</a>
+          </div>
+        </div>
+
+        <!-- Registered Doctors -->
+        <h5>Registered Doctors</h5>
+        <div class="table-responsive mb-4">
+          <table class="table border">
+            <tbody>
+              {% for doctor in registered_doctors %}
+              <tr class="table-warning">
+                <td>Dr. {{ doctor.name }}</td>
+                <td class="text-end">
+                  <a href="/delete-doctor/{{ doctor.id }}" class="btn btn-outline-danger btn-sm me-2">delete</a>
+                  <a href="/blacklist-doctor/{{ doctor.id }}" class="btn btn-outline-dark btn-sm">blacklist</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Registered Patients -->
+        <h5>Registered Patients</h5>
+        <div class="table-responsive mb-4">
+          <table class="table border">
+            <tbody>
+              {% for patient in registered_patients %}
+              <tr class="table-warning">
+                <td>{{ patient.name }}</td>
+                <td class="text-end">
+                  <a href="/delete-patient/{{ patient.id }}" class="btn btn-outline-danger btn-sm me-2">delete</a>
+                  <a href="/blacklist-patient/{{ patient.id }}" class="btn btn-outline-dark btn-sm">blacklist</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <h5>Upcoming Appointments</h5>
+        <div class="table-responsive">
+          <table class="table border">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Sr No.</th>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Doctor Name</th>
+                <th scope="col">Department</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Patient History</th>
+                <th scope="col" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for appointment in upcoming_appointments %}
+              <tr>
+                <td>{{ loop.index }}.</td>
+                <td>{{ appointment.patient_name }}</td>
+                <td>Dr. {{ appointment.doctor_name }}</td>
+                <td>{{ appointment.department }}</td>
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.time }}</td>
+                <td>
+                  <a href="/patient-history/{{ appointment.patient_id }}" class="btn btn-outline-info btn-sm">view</a>
+                </td>
+                <td class="text-center">
+                  <a href="/admin/delete-appointment/{{ appointment.id }}" 
+                     class="btn btn-outline-danger btn-sm me-2"
+                     onclick="return confirm('Are you sure you want to delete this appointment?')">delete
+                  </a><br>
+                  <br>
+                  <a href="/admin/reschedule-appointment/{{ appointment.id }}" 
+                     class="btn btn-outline-warning btn-sm">
+                    reschedule
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

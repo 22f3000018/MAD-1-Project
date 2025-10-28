@@ -13,7 +13,7 @@
   <div id = "canvas" > 
     <div id="form-body">
       <h2> Register form </h2>
-      <form action="" method="post">
+      <form action="/register" method="POST">
         <div class="mb-3">
           <label for="usr_name" class="form-label">Username</label>
           <input type="text" class="form-control" id="usr_name" placeholder="username, ex: john_doe123">
@@ -27,8 +27,8 @@
           <input type="password" class="form-control" id="pwd" placeholder="********">
         </div>
         <div class="text-center">
-          <input type="submit" class="btn btn-primary" value="Register"><br>
-          Already have an account? <a href="/login.html">Login here</a>
+        <input type="submit" name="register_action" class="btn btn-primary" value="Register"><br>
+        Already have an account? <a href="{{url_for('hospital_home')}}">Login</a>
         </div>
       </form>
     </div>
