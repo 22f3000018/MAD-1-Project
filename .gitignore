@@ -1,1 +1,16 @@
+# Python compiled files
+*.pyc
+*.pyo
+__pycache__/
 
+# Ignore database files
+*.db
+*.sqlite3
+
+.venv/
+env/
+venv*/
+# Ignore IDE specific files
+*/.vscode/
+
+*/__init__.py

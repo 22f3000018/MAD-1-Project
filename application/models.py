@@ -2,43 +2,34 @@ from .database import db
 
 class Admin(db.Model):
     __tablename__ = 'admin'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False, index=True)
+  
+    username = db.Column(db.String(80), unique=True, nullable=False, index=True, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
-    first_name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(50), nullable=False)
-    
-    @property
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
-    
-    # function that helps print the object in a meaningful way
-    def __repr__(self):
-        return f"<Admin {self.username}>"
+    first_name = db.Column(db.String(50), unique=True,nullable=False)
+    last_name = db.Column(db.String(50), unique=True,nullable=False)
+
 
 class Doctor(db.Model):
     __tablename__ = 'doctors'
     
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    phone = db.Column(db.String(15))
-    specialization = db.Column(db.String(100), nullable=False, index=True)
     department_id = db.Column(db.Integer, db.ForeignKey('department.id', ondelete='RESTRICT'), nullable=False)
+    specialization = db.Column(db.String(100), nullable=False, index=True)
     experience_years = db.Column(db.Integer, db.CheckConstraint('experience_years >= 0'))
-    qualification = db.Column(db.String(200))
-    consultation_fee = db.Column(db.Float, db.CheckConstraint('consultation_fee > 0'))
-    
+    gender = db.Column(db.String(10), db.CheckConstraint("gender IN ('male', 'female')"))
+
     # Relationship
     department = db.relationship('Department', backref=db.backref('doctors', lazy='dynamic'))
     
+    # create property name = full name
     @property
-    def full_name(self):
+    def name(self):
         return f"{self.first_name} {self.last_name}"
     
     def __repr__(self):
@@ -47,7 +38,7 @@ class Doctor(db.Model):
 class Patient(db.Model):
     __tablename__ = 'patients'
     
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
@@ -56,10 +47,6 @@ class Patient(db.Model):
     phone = db.Column(db.String(15))
     age = db.Column(db.Integer, db.CheckConstraint('age > 0 AND age <= 150'))
     gender = db.Column(db.String(10), db.CheckConstraint("gender IN ('male', 'female')"))
-    
-    @property
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
     
     def __repr__(self):
         return f"<Patient {self.username}>"
@@ -131,7 +118,7 @@ class Treatment(db.Model):
     prescription = db.Column(db.Text)
     notes = db.Column(db.Text)
     
-    # Relationship
+    # Relationship lazy == 'dynamic' to load treatments slowly
     appointment = db.relationship('Appointment', backref=db.backref('treatments', lazy='dynamic', cascade='all, delete-orphan'))
     
     @property
