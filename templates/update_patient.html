@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Update Patient</title>
+</head>
+<body>
+    <h1>Update Patient</h1>
+    <form action="/update-patient/{{ patient.id }}" method="POST" id="update-form">
+		<div>
+			<label>ID:</label>
+			<input type="text" name="register_form_id" value="{{ patient.id }}" disabled /><br>
+		</div>
+    <div class="mb-3">
+        <label>Username</label>
+        <input type="text" name="register_form_usrname" value="{{ patient.username }}">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="register_form_mail" value="{{ patient.email }}">
+    </div>
+    <div>
+      <label>First Name:</label>
+      <input type="text" name="register_form_f_name" value="{{ patient.first_name }}" required /><br>
+    </div>
+    <div>
+      <label>Last Name:</label>
+      <input type="text" name="register_form_l_name" value="{{ patient.last_name }}" /><br>
+    </div>
+    <div>
+      <label>Phone:</label>
+      <input type="text" name="register_form_phone" value="{{ patient.phone }}" /><br>
+    </div>
+    <div>
+      <label>Age:</label>
+      <input type="number" name="register_form_age" value="{{ patient.age }}" /><br>
+    </div>
+    <div>
+      <label>Select Gender:</label>
+      <div>
+        <input type="radio" id="gender_male" name="register_form_Input9" value="male" {% if patient.gender == 'male' %}checked{% endif %}>
+        <label for="gender_male">Male</label>
+      </div>
+      <div>
+        <input type="radio" id="gender_female" name="register_form_Input9" value="female" {% if patient.gender == 'female' %}checked{% endif %}>
+        <label for="gender_female">Female</label>
+      </div>
+    </div>
+    <div>
+      <input type="submit" value = "Submit">
+    </div>
+  </form>
+</body>
+</html>

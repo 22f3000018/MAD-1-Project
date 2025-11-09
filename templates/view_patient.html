@@ -24,7 +24,39 @@
             <p><strong>Gender:</strong> {{ patient.gender|capitalize if patient.gender else 'N/A' }}</p>
           </div>
         </div>
-        
+        <div>
+          <h4 class="mt-4">Patient History</h4>
+          {% if pat_his %}
+          <div class="table-responsive">
+            <table class="table border">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Sr No.</th>
+                  <th scope="col">Patient_ID</th>
+                  <th scope="col">Appointment_date</th>
+                  <th scope="col">Diagnosis</th>
+                  <th scope="col">Prescription</th>
+                  <th scope="col">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for history in pat_his %}
+                <tr>
+                  <td>{{ loop.index }}.</td>
+                  <td>{{ history.patient_id }}</td>
+                  <td>{{ history.appointment.date}}</td>
+                  <td>{{ history.diagnosis }}</td>
+                  <td>{{ history.prescription or 'N/A' }}</td>
+                  <td>{{ history.notes or 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p>No history available for this patient.</p>
+          {% endif %}
+        </div>
         <div class="mt-4">
           <a href="{{ url_for('admin_dashboard_fn') }}" class="btn btn-secondary">Back to Dashboard</a>
         </div>

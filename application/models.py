@@ -1,4 +1,5 @@
 from .database import db
+from sqlalchemy import event
 
 class Admin(db.Model):
     __tablename__ = 'admin'
@@ -59,13 +60,13 @@ class Patient(db.Model):
 
 
 class Appointment(db.Model):
-    __tablename__ = 'appointment'
+    __tablename__ = 'appointments'
     
     id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
-    date = db.Column(db.Date, nullable=False, index=True)
-    time = db.Column(db.Time, nullable=False)
+    date = db.Column(db.String(20), nullable=False, index=True)
+    time = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Booked')
     
     # Relationships
@@ -116,18 +117,54 @@ class DoctorAvailability(db.Model):
     # Unique constraint - one availability record per doctor per date
     __table_args__ = (db.UniqueConstraint('doctor_id', 'date', name='unique_doctor_date_availability'),)
 
-class Treatment(db.Model):
-    __tablename__ = 'treatment'
+class PatientHistory(db.Model):
+    __tablename__ = 'patient_history'
     
-    id = db.Column(db.Integer, primary_key=True)
-    appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id', ondelete='CASCADE'), nullable=False, index=True)
-    diagnosis = db.Column(db.Text, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
+    appointment_id = db.Column(db.Integer, db.ForeignKey('appointments.id', ondelete='CASCADE'), nullable=False, index=True, unique=True)
+    diagnosis = db.Column(db.Text, nullable=True)  # Changed to nullable=True since it's created automatically
     prescription = db.Column(db.Text)
     notes = db.Column(db.Text)
     
-    # Relationship lazy == 'dynamic' to load treatments slowly
-    appointment = db.relationship('Appointment', backref=db.backref('treatments', lazy='dynamic', cascade='all, delete-orphan'))
-    
+    # Relationships
+    patient = db.relationship('Patient', backref=db.backref('patient_histories', lazy='dynamic'))
+    appointment = db.relationship('Appointment', backref=db.backref('patient_history', uselist=False))
+
     @property
     def has_prescription(self):
         return bool(self.prescription and self.prescription.strip())
+
+
+# Event listener: Automatically create PatientHistory when Appointment is created
+'''
+Remove the below event listener if you prefer to create PatientHistory entries manually.
+TODO: Alternatively, you can create PatientHistory entry in the appointment booking function itself.
+# In your appointment booking route
+appointment = Appointment(patient_id=..., doctor_id=..., date=..., time=...)
+db.session.add(appointment)
+db.session.flush()  # Get the appointment.id
+
+# Manually create history
+history = PatientHistory(patient_id=appointment.patient_id, 
+                        appointment_id=appointment.id,
+                        diagnosis='Pending')
+db.session.add(history)
+db.session.commit()
+'''
+@event.listens_for(Appointment, 'after_insert')
+def create_patient_history(mapper, connection, target):
+    """
+    Automatically create a PatientHistory entry whenever a new Appointment is created.
+    This ensures every appointment has a corresponding patient history record.
+    """
+    # Create a new PatientHistory object
+    new_patient_history = PatientHistory(
+        patient_id=target.patient_id,
+        appointment_id=target.id,
+        diagnosis='Pending',  # Default value until doctor updates
+        prescription=None,
+        notes=None
+    )
+    db.session.add(new_patient_history)
+    db.session.commit()
