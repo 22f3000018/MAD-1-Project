@@ -115,13 +115,13 @@
               {% for appointment in upcoming_appointments %}
               <tr>
                 <td>{{ loop.index }}.</td>
-                <td>{{ appointment.patient_name }}</td>
-                <td>Dr. {{ appointment.doctor_name }}</td>
+                <td>{{ appointment.patient.name }}</td>
+                <td>Dr. {{ appointment.doctor.name }}</td>
                 <td>{{ appointment.department }}</td>
                 <td>{{ appointment.date }}</td>
                 <td>{{ appointment.time }}</td>
                 <td class="align-middle">
-                  <a href="/patient-history/{{ appointment.patient_id }}" class="btn btn-info btn-sm fw-semibold">📋 View</a>
+                  <a href="/view-patient/{{ appointment.patient_id }}" class="btn btn-info btn-sm fw-semibold">📋 View</a>
                 </td>
                 <td class="text-center align-middle">
                   <a href="/admin/delete-appointment/{{ appointment.id }}" class="btn btn-danger btn-sm me-2 mb-2 fw-semibold">🗑️ Delete</a>
