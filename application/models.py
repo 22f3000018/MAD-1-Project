@@ -35,6 +35,7 @@ class Doctor(db.Model):
     def __repr__(self):
         return f"<Doctor {self.username}: {self.specialization}>"
 
+
 class Patient(db.Model):
     __tablename__ = 'patients'
     
@@ -50,6 +51,12 @@ class Patient(db.Model):
     
     def __repr__(self):
         return f"<Patient {self.username}>"
+    
+    # create property name = full name
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Appointment(db.Model):
     __tablename__ = 'appointment'

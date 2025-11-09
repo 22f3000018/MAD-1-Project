@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Update student</title>
+</head>
+<body>
+    <h1>Update Doctor</h1>
+    <form action="/update-doctor/{{ doctor.id }}" method="POST" id="update-form">
+		<div>
+			<label>ID:</label>
+			<input type="text" name="register_form_id" value="{{ doctor.id }}" disabled /><br>
+		</div>
+    <div class="mb-3">
+        <label>Username</label>
+        <input type="text" name="register_form_usrname" value="{{ doctor.username }}">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="register_form_mail" value="{{ doctor.email }}">
+    </div>
+    <div>
+      <label>First Name:</label>
+      <input type="text" name="register_form_f_name" value="{{ doctor.first_name }}" required /><br>
+    </div>
+    <div>
+      <label>Last Name:</label>
+      <input type="text" name="register_form_l_name" value="{{ doctor.last_name }}" /><br>
+    </div>
+    <div>
+      <label>Department ID:</label>
+      <input type="text" name="register_form_dep_id" value="{{ doctor.department_id }}" /><br>
+    </div>
+    <div>
+      <label>Specialization:</label>
+      <input type="text" name="register_form_specialization" value="{{ doctor.specialization }}" /><br>
+    </div>
+    <div>
+      <label>Experience:</label>
+      <input type="text" name="register_form_experience" value="{{ doctor.experience_years }}" /><br>
+    </div>
+    <div>
+      <label>Select Gender:</label>
+      <div>
+        <input type="radio" id="gender_male" name="register_form_Input9" value="male" {% if doctor.gender == 'male' %}checked{% endif %}>
+        <label for="gender_male">Male</label>
+      </div>
+      <div>
+        <input type="radio" id="gender_female" name="register_form_Input9" value="female" {% if doctor.gender == 'female' %}checked{% endif %}>
+        <label for="gender_female">Female</label>
+      </div>
+    </div>
+    <div>
+      <input type="submit" value = "Submit">
+    </div>
+  </form>
+</body>
+</html>

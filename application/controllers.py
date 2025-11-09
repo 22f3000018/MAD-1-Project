@@ -58,6 +58,7 @@ def doctor_dashboard_fn():
     doc = Doctor.query.filter_by(username=session['username']).first()
     return render_template('dashboard_doctor.html', doc=doc)
 
+
 @hospital_app.route('/patient_dashboard')
 def patient_dashboard_fn():
     if session.get('role') != 'patient':
@@ -65,3 +66,29 @@ def patient_dashboard_fn():
         return redirect(url_for('hospital_home_and_login'))
     pat = Patient.query.filter_by(username=session['username']).first()
     return render_template('dashboard_patient.html', patient=pat)
+
+
+@hospital_app.route('/update-doctor/<int:doctor_id>', methods=['GET', 'POST'])
+def update_doctor_fn(doctor_id):
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    if request.method == 'GET':
+        doctor = Doctor.query.filter_by(id=doctor_id).first()
+        if doctor is None:
+            flash(message='Doctor not found', category='danger')
+            return redirect(url_for('admin_dashboard_fn'))
+        return render_template('update_doctor.html', doctor=doctor)
+    if request.method == 'POST':
+        doctor = Doctor.query.filter_by(id=doctor_id).first()
+        doctor.username = request.form.get('register_form_usrname')
+        doctor.email = request.form.get('register_form_mail')
+        doctor.first_name = request.form.get('register_form_f_name')
+        doctor.last_name = request.form.get('register_form_l_name')
+        doctor.department_id = request.form.get('register_form_dep_id')
+        doctor.specialization = request.form.get('register_form_specialization')
+        doctor.experience_years = request.form.get('register_form_experience')
+        doctor.gender = request.form.get('register_form_Input9')
+        db.session.commit()
+        flash(message='Doctor updated successfully', category='success')
+        return redirect(url_for('admin_dashboard_fn'))
