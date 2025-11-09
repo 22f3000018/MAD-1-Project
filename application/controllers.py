@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session, url
 from flask import current_app as hospital_app
 from application.models import Admin, Doctor, Patient
 from application.database import db
+from sqlalchemy import or_
 
 @hospital_app.route('/')
 @hospital_app.route('/login', methods=['GET', 'POST']) 
@@ -38,16 +39,37 @@ def hospital_home_and_login():
     return redirect(url_for('hospital_home_and_login'))
   
 
-@hospital_app.route('/admin_dashboard')
+@hospital_app.route('/admin_dashboard', methods=['GET', 'POST'])
 def admin_dashboard_fn():
     if session.get('role') != 'admin':
         flash(message='Please log in as admin to access this page', category='warning')
         return redirect(url_for('hospital_home_and_login'))
     admin = Admin.query.filter_by(username=session['username']).first()
-    list_of_doctors = Doctor.query.all()
-    list_of_patients = Patient.query.all()
-    return render_template('dashboard_admin.html', admin_name=admin.last_name, registered_doctors=list_of_doctors, 
-                           registered_patients=list_of_patients)
+    
+    # Handle search
+    search_query = request.args.get('search_form', '').strip()
+    
+    if search_query:
+        search_pattern = f'%{search_query}%'
+        
+        # Search doctors by username, first_name, last_name
+        list_of_doctors = Doctor.query.filter(or_(Doctor.username.ilike(search_pattern),
+                                                  Doctor.first_name.ilike(search_pattern),
+                                                  Doctor.last_name.ilike(search_pattern))).all()
+        
+        # Search patients by username, first_name, last_name
+        list_of_patients = Patient.query.filter(or_(Patient.username.ilike(search_pattern),
+                                                    Patient.first_name.ilike(search_pattern),
+                                                    Patient.last_name.ilike(search_pattern))).all()
+    else:
+        # Show all if no search query
+        list_of_doctors = Doctor.query.all()
+        list_of_patients = Patient.query.all()
+    
+    return render_template('dashboard_admin.html', admin_name=admin.last_name, 
+                           registered_doctors=list_of_doctors, 
+                           registered_patients=list_of_patients,
+                           search_query=search_query)
 
 
 @hospital_app.route('/doctor_dashboard')
@@ -66,6 +88,30 @@ def patient_dashboard_fn():
         return redirect(url_for('hospital_home_and_login'))
     pat = Patient.query.filter_by(username=session['username']).first()
     return render_template('dashboard_patient.html', patient=pat)
+
+
+@hospital_app.route('/view-doctor/<int:doctor_id>')
+def view_doctor_fn(doctor_id):
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    doctor = Doctor.query.filter_by(id=doctor_id).first()
+    if doctor is None:
+        flash(message='Doctor not found', category='danger')
+        return redirect(url_for('admin_dashboard_fn'))
+    return render_template('view_doctor.html', doctor=doctor)
+
+
+@hospital_app.route('/view-patient/<int:patient_id>')
+def view_patient_fn(patient_id):
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    patient = Patient.query.filter_by(id=patient_id).first()
+    if patient is None:
+        flash(message='Patient not found', category='danger')
+        return redirect(url_for('admin_dashboard_fn'))
+    return render_template('view_patient.html', patient=patient)
 
 
 @hospital_app.route('/update-doctor/<int:doctor_id>', methods=['GET', 'POST'])

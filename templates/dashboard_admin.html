@@ -34,15 +34,26 @@
         <!-- Search Bar -->
         <div class="row mb-3">
           <div class="col-md-8">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="doctor, patient, department...">
-              <button class="btn btn-outline-primary" type="button">search</button>
-            </div>
+            <form action="{{ url_for('admin_dashboard_fn') }}" method="GET">
+              <div class="input-group">
+                <input type="text" class="form-control" name="search_form" placeholder="Search doctor, patient by name or username..." value="{{ search_query or '' }}">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+                {% if search_query %}
+                <a href="{{ url_for('admin_dashboard_fn') }}" class="btn btn-outline-secondary">Clear</a>
+                {% endif %}
+              </div>
+            </form>
           </div>
           <div class="col-md-4 text-end">
             <a href="/doctor_register" class="btn btn-success">Add new doctor</a>
           </div>
         </div>
+        
+        {% if search_query %}
+        <div class="alert alert-info">
+          Showing results for: <strong>{{ search_query }}</strong>
+        </div>
+        {% endif %}
 
         <!-- Registered Doctors -->
         <h5>Registered Doctors</h5>
