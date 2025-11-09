@@ -80,24 +80,6 @@ def admin_dashboard_fn():
                             search_query=search_query)
 
 
-@hospital_app.route('/doctor_dashboard')
-def doctor_dashboard_fn():
-    if session.get('role') != 'doctor':
-        flash(message='Please log in as doctor to access this page', category='warning')
-        return redirect(url_for('hospital_home_and_login'))
-    doc = Doctor.query.filter_by(username=session['username']).first()
-    return render_template('dashboard_doctor.html', doc=doc)
-
-
-@hospital_app.route('/patient_dashboard')
-def patient_dashboard_fn():
-    if session.get('role') != 'patient':
-        flash(message='Please log in as patient to access this page', category='warning')
-        return redirect(url_for('hospital_home_and_login'))
-    pat = Patient.query.filter_by(username=session['username']).first()
-    return render_template('dashboard_patient.html', patient=pat)
-
-
 @hospital_app.route('/view-doctor/<int:doctor_id>', methods=['GET'])
 def view_doctor_fn(doctor_id):
     if session.get('role') != 'admin':
