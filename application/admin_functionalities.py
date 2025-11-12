@@ -62,6 +62,8 @@ def admin_dashboard_fn():
           list_of_patients = Patient.query.filter(or_(Patient.username.ilike(search_pattern),
                                                       Patient.first_name.ilike(search_pattern),
                                                       Patient.last_name.ilike(search_pattern))).all()
+          future_appointments = []
+          old_appointments = []
       else:
           # Show all if no search query
           list_of_doctors = Doctor.query.all()
@@ -70,13 +72,16 @@ def admin_dashboard_fn():
           # Get only future appointments (date is stored as string 'DD-MM-YYYY')
           from datetime import datetime
           today = datetime.today().date()
-          list_of_appointments = [appt for appt in Appointment.query.all() 
+          future_appointments = [appt for appt in Appointment.query.all() 
                                  if datetime.strptime(appt.date, '%d-%m-%Y').date() >= today]
-      
+          old_appointments = [appt for appt in Appointment.query.all() 
+                                 if datetime.strptime(appt.date, '%d-%m-%Y').date() < today]
+
       return render_template('dashboard_admin.html', admin_name=admin.last_name, 
                             registered_doctors=list_of_doctors, 
                             registered_patients=list_of_patients,
-                            upcoming_appointments=list_of_appointments,
+                            upcoming_appointments=future_appointments,
+                            past_appointments=old_appointments,
                             search_query=search_query)
 
 

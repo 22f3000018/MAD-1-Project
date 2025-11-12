@@ -100,7 +100,11 @@ class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     department_name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.Text)
-    doctors_registered = db.Column(db.Integer, default=0)
+    
+    @property
+    def doctors_registered(self):
+        """Count of doctors in this department"""
+        return self.doctors.count()
 
 class DoctorAvailability(db.Model):
     __tablename__ = 'doctor_availability'

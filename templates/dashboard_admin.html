@@ -95,6 +95,7 @@
           </table>
         </div>
 
+        {% if upcoming_appointments %}
         <!-- Upcoming Appointments -->
         <h5>Upcoming Appointments</h5>
         <div class="table-responsive">
@@ -132,9 +133,45 @@
             </tbody>
           </table>
         </div>
+        {% endif %}
+        {% if past_appointments %}
+        <!-- Past Appointments -->
+        <h5>Past Appointments</h5>
+        <div class="table-responsive">
+          <table class="table border">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Sr No.</th>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Doctor Name</th>
+                <th scope="col">Department</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Patient History</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for appointment in past_appointments %}
+              <tr>
+                <td>{{ loop.index }}.</td>
+                <td>{{ appointment.patient.name }}</td>
+                <td>Dr. {{ appointment.doctor.name }}</td>
+                <td>{{ appointment.department }}</td>
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.time }}</td>
+                <td class="align-middle">
+                  <a href="/view-patient/{{ appointment.patient_id }}" class="btn btn-info btn-sm fw-semibold">📋 View</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>
+<!-- Bootstrap JS to enable close button functionality for flash messages -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
         crossorigin="anonymous"></script>

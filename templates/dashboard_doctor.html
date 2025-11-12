@@ -20,17 +20,31 @@
           </div>
         </div>
       </nav>
+      <!--Flash message block -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
       
       <div id="content" class="container py-3">
         <!-- Upcoming Appointments -->
         <h4>Upcoming Appointments</h4>
+        {% if upcoming_appointments %}
         <div class="table-responsive mb-4">
           <table class="table border">
             <thead class="table-light">
               <tr>
                 <th scope="col">Sr No.</th>
                 <th scope="col">Patient Name</th>
-                <th scope="col">Patient History</th>
+                <th scope="col">Appointment Date</th>
+                <th scope="col">Appointment Time</th>
+                <th scope="col">Status</th>
                 <th scope="col" class="text-center">Actions</th>
               </tr>
             </thead>
@@ -38,36 +52,52 @@
               {% for appointment in upcoming_appointments %}
               <tr>
                 <td>{{ loop.index }}.</td>
-                <td>{{ appointment.patient_name }}</td>
-                <td>
-                  <a href="/patient-history/{{ appointment.patient_id }}" class="btn btn-outline-info btn-sm">Patient History</a>
-                </td>
+                <td>{{ appointment.patient.name }}</td>
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.time }}</td>
+                <td>{{ appointment.status }}</td>
                 <td class="text-center">
                   <a href="/mark-complete/{{ appointment.id }}" class="btn btn-outline-success btn-sm me-2">mark as complete</a>
                   <a href="/cancel-appointment/{{ appointment.id }}" class="btn btn-outline-danger btn-sm">cancel</a>
+                  <a href="/update-patient-treatment-details/{{  appointment.id }}/{{ appointment.patient_id }}" class="btn btn-outline-primary btn-sm">update treatment</a>
                 </td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
+        {% else %}
+        <p>No upcoming appointments.</p>
+        {% endif %}
 
-        <!-- Assigned Patients -->
-        <h4>Assigned Patients</h4>
+        <!-- List of Patients -->
+        <h4>Treated Patients</h4>
+        {% if treated_patients %}
         <div class="table-responsive mb-4">
           <table class="table border">
-            <tbody>
-              {% for patient in assigned_patients %}
+            <thead class="table-light">
               <tr>
+                <th scope="col">Sr No.</th>
+                <th scope="col">Patient Name</th>
+                <th scope="col" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for patient in treated_patients %}
+              <tr>
+                <td>{{ loop.index }}.</td>
                 <td>{{ patient.name }}</td>
                 <td class="text-end">
-                  <a href="/patient-details/{{ patient.id }}" class="btn btn-outline-primary btn-sm">view</a>
+                  <a href="/view-patient-treatment-history/{{ patient.id }}" class="btn btn-outline-primary btn-sm">view</a>
                 </td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
+        {% else %}
+        <p>No assigned patients.</p>
+        {% endif %}
 
         <!-- Provide Availability Button -->
         <div class="text-end">
@@ -76,5 +106,9 @@
       </div>
     </div>
   </div>
+  <!-- Bootstrap JS to enable close button functionality for flash messages -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+          crossorigin="anonymous"></script>
 </body>
 </html>

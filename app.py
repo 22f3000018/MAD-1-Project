@@ -14,6 +14,7 @@ def create_app():
 hospital_app = create_app()
 # Only after creating the app, current_app in will be available in controllers.py
 from application.admin_functionalities import *
+from application.doctor_functionalities import *
 from application.registration_functions import * 
 
 
