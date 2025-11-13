@@ -14,7 +14,7 @@ class Admin(db.Model):
 class Doctor(db.Model):
     __tablename__ = 'doctors'
     
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(20), primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
@@ -40,7 +40,7 @@ class Doctor(db.Model):
 class Patient(db.Model):
     __tablename__ = 'patients'
     
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(20), primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
@@ -63,8 +63,8 @@ class Appointment(db.Model):
     __tablename__ = 'appointments'
     
     id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
+    patient_id = db.Column(db.String(20), db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
+    doctor_id = db.Column(db.String(20), db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
     date = db.Column(db.String(20), nullable=False, index=True)
     time = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Booked')
@@ -110,7 +110,7 @@ class DoctorAvailability(db.Model):
     __tablename__ = 'doctor_availability'
     
     id = db.Column(db.Integer, primary_key=True)
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
+    doctor_id = db.Column(db.String(20), db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
     date = db.Column(db.String(20), nullable=False, index=True)  # DD-MM-YYYY format
     morning_time = db.Column(db.Boolean, default=False)
     evening_time = db.Column(db.Boolean, default=False)
@@ -125,7 +125,7 @@ class PatientHistory(db.Model):
     __tablename__ = 'patient_history'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
+    patient_id = db.Column(db.String(20), db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
     appointment_id = db.Column(db.Integer, db.ForeignKey('appointments.id', ondelete='CASCADE'), nullable=False, index=True, unique=True)
     diagnosis = db.Column(db.Text, nullable=True)  # Changed to nullable=True since it's created automatically
     prescription = db.Column(db.Text)

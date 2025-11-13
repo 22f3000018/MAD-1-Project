@@ -25,13 +25,10 @@
       </nav>
       
       <div id="content" class="container py-3">
-        <!-- Overview Section -->
-        <h4>Overview</h4>
+        <!-- Department details -->
+        <h4>Details of Department: {{ department.name }}</h4>
         <p class="mb-4">
-          The Oncology Department in a hospital is dedicated to the diagnosis, treatment, and 
-          care of patients with cancer. It employs a team of specialized doctors, such as medical 
-          oncologists, surgical oncologists, and radiation oncologists, who work together to 
-          provide comprehensive cancer care.
+          {{ department.description or "No description available for this department." }}
         </p>
 
         <!-- Doctors List -->
@@ -43,8 +40,8 @@
               <tr>
                 <td>Dr. {{ doctor.name }}</td>
                 <td class="text-end">
-                  <a href="/check-availability/{{ doctor.id }}" class="btn btn-outline-primary btn-sm me-2">check availability</a>
-                  <a href="/doctor-details/{{ doctor.id }}" class="btn btn-outline-primary btn-sm">view details</a>
+                  <a href="/check-availability/{{ doctor.id }}" class="btn btn-outline-primary btn-sm me-2">📅 Check availability</a>
+                  <a href="/doctor-details/{{ doctor.id }}" class="btn btn-outline-primary btn-sm">👁️ View details</a>
                 </td>
               </tr>
               {% endfor %}

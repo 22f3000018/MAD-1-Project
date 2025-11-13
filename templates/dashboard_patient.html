@@ -52,7 +52,7 @@
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                   <button type="submit" class="btn btn-primary me-2">Search Doctors</button>
-                  <a href="/dashboard" class="btn btn-outline-secondary">Clear</a>
+                  <a href="/patient_dashboard" class="btn btn-outline-secondary">Back</a>
                 </div>
               </div>
             </form>
@@ -84,7 +84,7 @@
                     <td>{{ doctor.experience }} years</td>
                     <td class="text-center">
                       <a href="/check-availability/{{ doctor.id }}" class="btn btn-outline-success btn-sm me-2">Check Availability</a>
-                      <a href="/doctor-details/{{ doctor.id }}" class="btn btn-outline-info btn-sm">View Profile</a>
+                      <a href="/doctor-details/{{ doctor.id }}" class="btn btn-outline-info btn-sm">👁️ View Profile</a>
                     </td>
                   </tr>
                   {% endfor %}
@@ -110,7 +110,7 @@
               <tr>
                 <td>{{ dep.name }}</td>
                 <td class="text-end">
-                  <a href="/departments/{{ dep.id }}" class="btn btn-outline-primary btn-sm rounded-pill">view details</a>
+                  <a href="/departments/{{ dep.id }}" class="btn btn-outline-primary btn-sm rounded-pill">👁️ View details</a>
                 </td>
               </tr>
               {% endfor %}

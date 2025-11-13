@@ -24,10 +24,14 @@ def admin_dashboard_fn():
                                                     Doctor.first_name.ilike(search_pattern),
                                                     Doctor.last_name.ilike(search_pattern))).all()
           
-          # Search patients by username, first_name, last_name
-          list_of_patients = Patient.query.filter(or_(Patient.username.ilike(search_pattern),
-                                                      Patient.first_name.ilike(search_pattern),
-                                                      Patient.last_name.ilike(search_pattern))).all()
+          # Search patients by first_name, last_name, ID, email, phone
+          list_of_patients = Patient.query.filter(or_(
+              Patient.first_name.ilike(search_pattern),
+              Patient.last_name.ilike(search_pattern),
+              Patient.email.ilike(search_pattern),
+              Patient.phone.ilike(search_pattern),
+              Patient.id == int(search_query)
+          )).all()
           future_appointments = []
           old_appointments = []
       else:

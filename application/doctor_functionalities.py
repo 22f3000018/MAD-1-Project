@@ -115,6 +115,11 @@ def provide_availability_fn():
         return render_template('doctor_availability.html', next_7_days=next_7_days)
     
     if request.method == 'POST':
+      existing_availability = DoctorAvailability.query.filter_by(doctor_id=doctor.id).all()
+      # Delete existing availability records for this doctor
+      for availability in existing_availability:
+          db.session.delete(availability)
+      db.session.commit()
       # For each day (0-6), check if morning/evening are checked
       for i in range(7):
           morning_checked = request.form.get(f'morning_{i}') == '1'

@@ -57,9 +57,9 @@
                 <td>{{ appointment.time }}</td>
                 <td>{{ appointment.status }}</td>
                 <td class="text-center">
-                  <a href="/mark-complete/{{ appointment.id }}" class="btn btn-outline-success btn-sm me-2">mark as complete</a>
-                  <a href="/cancel-appointment/{{ appointment.id }}" class="btn btn-outline-danger btn-sm">cancel</a>
-                  <a href="/update-patient-treatment-details/{{  appointment.id }}/{{ appointment.patient_id }}" class="btn btn-outline-primary btn-sm">update treatment</a>
+                  <a href="/mark-complete/{{ appointment.id }}" class="btn btn-outline-success btn-sm me-2">✅ Mark as Complete</a>
+                  <a href="/cancel-appointment/{{ appointment.id }}" class="btn btn-outline-danger btn-sm">🚫 Cancel</a>
+                  <a href="/update-patient-treatment-details/{{  appointment.id }}/{{ appointment.patient_id }}" class="btn btn-outline-primary btn-sm">✏️ Update Treatment</a>
                 </td>
               </tr>
               {% endfor %}
@@ -87,8 +87,8 @@
               <tr>
                 <td>{{ loop.index }}.</td>
                 <td>{{ patient.name }}</td>
-                <td class="text-end">
-                  <a href="/view-patient-treatment-history/{{ patient.id }}" class="btn btn-outline-primary btn-sm">view</a>
+                <td class="align-middle text-center">
+                  <a href="/view-patient-treatment-history/{{ patient.id }}" class="btn btn-outline-primary btn-sm">📋 View</a>
                 </td>
               </tr>
               {% endfor %}

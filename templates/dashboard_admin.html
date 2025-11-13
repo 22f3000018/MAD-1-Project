@@ -124,10 +124,6 @@
                 <td class="align-middle">
                   <a href="/view-patient/{{ appointment.patient_id }}" class="btn btn-info btn-sm fw-semibold">📋 View</a>
                 </td>
-                <td class="text-center align-middle">
-                  <a href="/admin/delete-appointment/{{ appointment.id }}" class="btn btn-danger btn-sm me-2 mb-2 fw-semibold">🗑️ Delete</a>
-                  <a href="/admin/reschedule-appointment/{{ appointment.id }}" class="btn btn-warning btn-sm fw-semibold">🔄 Reschedule</a>
-                </td>
               </tr>
               {% endfor %}
             </tbody>
