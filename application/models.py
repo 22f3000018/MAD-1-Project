@@ -111,9 +111,9 @@ class DoctorAvailability(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
-    date = db.Column(db.Date, nullable=False, index=True)
-    morning_time = db.Column(db.String(50))  # e.g., "9:00 AM - 12:00 PM"
-    evening_time = db.Column(db.String(50))  # e.g., "2:00 PM - 5:00 PM"
+    date = db.Column(db.String(20), nullable=False, index=True)  # DD-MM-YYYY format
+    morning_time = db.Column(db.Boolean, default=False)
+    evening_time = db.Column(db.Boolean, default=False)
     
     # Relationship
     doctor = db.relationship('Doctor', backref=db.backref('availability_slots', lazy='dynamic', cascade='all, delete-orphan'))

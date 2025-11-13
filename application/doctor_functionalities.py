@@ -1,8 +1,7 @@
-from flask import Flask, render_template, request, flash, redirect, session, url_for
+from flask import render_template, request, flash, redirect, session, url_for
 from flask import current_app as hospital_app
 from application.models import Doctor, Patient, PatientHistory, Appointment, DoctorAvailability
 from application.database import db
-from sqlalchemy import or_
 
 @hospital_app.route('/doctor_dashboard')
 def doctor_dashboard_fn():
@@ -101,4 +100,38 @@ def cancel_appointment_fn(appointment_id):
     flash(message='Appointment has been canceled.', category='success')
     return redirect(url_for('doctor_dashboard_fn'))
 
-
+from datetime import datetime, timedelta
+today = datetime.today().date()
+@hospital_app.route('/provide-availability', methods=['GET', 'POST'])
+def provide_availability_fn():
+    if session.get('role') != 'doctor':
+        flash(message='Please log in as doctor to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    
+    doctor = Doctor.query.filter_by(username=session['username']).first()
+    
+    if request.method == 'GET':
+        next_7_days = [(today + timedelta(days=i)).strftime('%d-%m-%Y') for i in range(7)]
+        return render_template('doctor_availability.html', next_7_days=next_7_days)
+    
+    if request.method == 'POST':
+      # For each day (0-6), check if morning/evening are checked
+      for i in range(7):
+          morning_checked = request.form.get(f'morning_{i}') == '1'
+          evening_checked = request.form.get(f'evening_{i}') == '1'
+          
+          # Create record if at least one slot is checked
+          if morning_checked or evening_checked:
+              date_str = (today + timedelta(days=i)).strftime('%d-%m-%Y')
+              
+              new_availability = DoctorAvailability(
+                  doctor_id=doctor.id,
+                  date=date_str,
+                  morning_time=morning_checked,
+                  evening_time=evening_checked
+              )
+              db.session.add(new_availability)
+      
+      db.session.commit()
+      flash(message='Availability saved successfully!', category='success')
+      return redirect(url_for('doctor_dashboard_fn'))

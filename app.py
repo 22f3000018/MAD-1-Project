@@ -16,7 +16,7 @@ hospital_app = create_app()
 from application.admin_functionalities import *
 from application.doctor_functionalities import *
 from application.registration_functions import * 
-
+from application.login_session_functionalties import *
 
 if __name__ == "__main__":
   db.create_all()

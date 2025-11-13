@@ -10,14 +10,14 @@
     <div id="canvas">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Doctor's Availability</a>
+          <a class="navbar-brand" href="#">Set Your Availability</a>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="/patient/history">History</a>
+                <a class="nav-link" href="/doctor_dashboard">Go to Dashboard</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/login">logout</a>
+                <a class="nav-link" href="/login">Logout</a>
               </li>
             </ul>
           </div>
@@ -25,29 +25,49 @@
       </nav>
       
       <div id="content" class="container py-3">
-        <div class="row">
-          {% for slot in availability_slots %}
-          <div class="col-md-4 mb-3">
-            <div class="card">
-              <div class="card-body text-center">
-                <h6 class="card-title">{{ slot.date }}</h6>
-                <div class="mb-2">
-                  <span class="badge bg-success">{{ slot.morning_time }}</span>
+        <div class="alert alert-info">
+          <strong>Select your availability</strong> - Check the time slots you're available for the next 7 days
+        </div>
+
+        <form method="POST" action="/provide-availability">
+          <div class="row g-3">
+            {% for i in range(7) %}
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header bg-light">
+                  <h6 class="mb-0">{{ next_7_days[i] }}</h6>
                 </div>
-                <div class="mb-2">
-                  <span class="badge bg-danger">{{ slot.evening_time }}</span>
+                <div class="card-body">
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="morning_{{ i }}" value="1" id="morning_{{ i }}">
+                    <label class="form-check-label" for="morning_{{ i }}">
+                      🌅 Morning (9:00 AM - 12:00 PM)
+                    </label>
+                  </div>
+                  
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="evening_{{ i }}" value="1" id="evening_{{ i }}">
+                    <label class="form-check-label" for="evening_{{ i }}">
+                      🌆 Evening (2:00 PM - 5:00 PM)
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
+            {% endfor %}
           </div>
-          {% endfor %}
-        </div>
-        
-        <div class="text-end mt-3">
-          <button type="button" class="btn btn-primary">book</button>
-        </div>
+          
+          <div class="text-end mt-4">
+            <a href="/doctor_dashboard" class="btn btn-secondary me-2">Cancel</a>
+            <button type="submit" class="btn btn-primary btn-lg">Save Availability</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+          crossorigin="anonymous"></script>
 </body>
 </html>
