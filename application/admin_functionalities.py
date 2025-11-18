@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, session, url_for
 from flask import current_app as hospital_app
-from application.models import Admin, Doctor, Patient, PatientHistory, Appointment
+from application.models import Admin, Doctor, Patient, PatientHistory, Appointment, DoctorAvailability
 from application.database import db
 from sqlalchemy import or_
   
@@ -132,3 +132,43 @@ def update_patient_fn(patient_id):
         db.session.commit()
         flash(message='Patient updated successfully', category='success')
         return redirect(url_for('admin_dashboard_fn'))
+    
+@hospital_app.route('/delete-doctor/<int:doctor_id>', methods=['GET'])
+def delete_doctor_fn(doctor_id):
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    doctor = Doctor.query.filter_by(id=doctor_id).first()
+    if doctor is None:
+        flash(message='Doctor not found', category='danger')
+        return redirect(url_for('admin_dashboard_fn'))
+    db.session.delete(doctor)
+    db.session.commit()
+    flash(message='Doctor deleted successfully', category='success')
+    return redirect(url_for('admin_dashboard_fn'))
+
+@hospital_app.route('/delete-patient/<int:patient_id>', methods=['GET'])
+def delete_patient_fn(patient_id): 
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    patient = Patient.query.filter_by(id=patient_id).first()
+    if patient is None:
+        flash(message='Patient not found', category='danger')
+        return redirect(url_for('admin_dashboard_fn'))
+
+    # Cancel all appointments for this patient and update doctor availability
+    appointments = Appointment.query.filter_by(patient_id=patient_id, status='Booked').all()
+    for appointment in appointments:
+        appointment.status = 'Cancelled'
+        doc_availability = DoctorAvailability.query.filter_by(doctor_id=int(appointment.doctor_id), date=appointment.date).first()
+        if doc_availability:
+            if appointment.time == '09:00 AM - 12:00 PM':
+                doc_availability.morning_time = True
+            else:
+                doc_availability.evening_time = True
+
+    db.session.delete(patient)
+    db.session.commit()
+    flash(message='Patient deleted successfully', category='success')
+    return redirect(url_for('admin_dashboard_fn'))
