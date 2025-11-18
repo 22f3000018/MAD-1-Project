@@ -1,5 +1,8 @@
 /* Custom styles for Hospital Management System */
 
+body, html {
+    cursor: default !important;
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

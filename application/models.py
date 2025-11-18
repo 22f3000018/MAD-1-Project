@@ -14,7 +14,7 @@ class Admin(db.Model):
 class Doctor(db.Model):
     __tablename__ = 'doctors'
     
-    id = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
@@ -40,7 +40,7 @@ class Doctor(db.Model):
 class Patient(db.Model):
     __tablename__ = 'patients'
     
-    id = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False)
@@ -62,9 +62,9 @@ class Patient(db.Model):
 class Appointment(db.Model):
     __tablename__ = 'appointments'
     
-    id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.String(20), db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
-    doctor_id = db.Column(db.String(20), db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
     date = db.Column(db.String(20), nullable=False, index=True)
     time = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Booked')
@@ -110,7 +110,7 @@ class DoctorAvailability(db.Model):
     __tablename__ = 'doctor_availability'
     
     id = db.Column(db.Integer, primary_key=True)
-    doctor_id = db.Column(db.String(20), db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id', ondelete='CASCADE'), nullable=False, index=True)
     date = db.Column(db.String(20), nullable=False, index=True)  # DD-MM-YYYY format
     morning_time = db.Column(db.Boolean, default=False)
     evening_time = db.Column(db.Boolean, default=False)
@@ -125,7 +125,7 @@ class PatientHistory(db.Model):
     __tablename__ = 'patient_history'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    patient_id = db.Column(db.String(20), db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id', ondelete='CASCADE'), nullable=False, index=True)
     appointment_id = db.Column(db.Integer, db.ForeignKey('appointments.id', ondelete='CASCADE'), nullable=False, index=True, unique=True)
     diagnosis = db.Column(db.Text, nullable=True)  # Changed to nullable=True since it's created automatically
     prescription = db.Column(db.Text)
@@ -138,37 +138,3 @@ class PatientHistory(db.Model):
     @property
     def has_prescription(self):
         return bool(self.prescription and self.prescription.strip())
-
-
-# Event listener: Automatically create PatientHistory when Appointment is created
-'''
-Remove the below event listener if you prefer to create PatientHistory entries manually.
-TODO: Alternatively, you can create PatientHistory entry in the appointment booking function itself.
-# In your appointment booking route
-appointment = Appointment(patient_id=..., doctor_id=..., date=..., time=...)
-db.session.add(appointment)
-db.session.flush()  # Get the appointment.id
-
-# Manually create history
-history = PatientHistory(patient_id=appointment.patient_id, 
-                        appointment_id=appointment.id,
-                        diagnosis='Pending')
-db.session.add(history)
-db.session.commit()
-'''
-@event.listens_for(Appointment, 'after_insert')
-def create_patient_history(mapper, connection, target):
-    """
-    Automatically create a PatientHistory entry whenever a new Appointment is created.
-    This ensures every appointment has a corresponding patient history record.
-    """
-    # Create a new PatientHistory object
-    new_patient_history = PatientHistory(
-        patient_id=target.patient_id,
-        appointment_id=target.id,
-        diagnosis='Pending',  # Default value until doctor updates
-        prescription=None,
-        notes=None
-    )
-    db.session.add(new_patient_history)
-    db.session.commit()
