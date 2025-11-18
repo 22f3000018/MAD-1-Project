@@ -14,7 +14,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="/patient/history">History</a>
+                <a class="nav-link" href="/patient_dashboard">Back</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/login">logout</a>
@@ -32,15 +32,10 @@
                 <div class="row">
                   <div class="col-8">
                     <h5 class="card-title">Dr. {{ doctor.name }}</h5>
-                    <p class="mb-1"><strong>MBBS, MD - Medical Oncology</strong></p>
-                    <p class="mb-1">Medical Oncologist</p>
                     <p class="mb-1">{{ doctor.experience }} Years Experience Overall</p>
-                    <p class="mb-3">({{ doctor.specialist_years }} years as specialist)</p>
-                    
-                    <p class="small">
-                      Dr. {{ doctor.name }} is a Medical Oncologist in India and has 
-                      an experience of {{ doctor.experience }} years in this field.
-                    </p>
+                    <p class="mb-1">Specialisation in : {{ doctor.specialization }}</p>
+                    <p class="mb-1"><strong> Department: {{ doctor.department.department_name }}</strong></p>
+                    <p class="mb-1">Email: {{ doctor.email or 'N/A' }}</p>
                   </div>
                   
                   <div class="col-4 text-center">
@@ -52,7 +47,7 @@
                 
                 <div class="text-center mt-3">
                   <a href="/check-availability/{{ doctor.id }}" class="btn btn-outline-primary me-2">check availability</a>
-                  <a href="/departments" class="btn btn-outline-secondary">Go Back</a>
+                  <a href="/patient_dashboard" class="btn btn-outline-secondary">Go Back</a>
                 </div>
               </div>
             </div>

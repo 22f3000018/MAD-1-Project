@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <!-- Search Results (if any) -->
+        <!-- Search Results default to all list of doctors -->
         <div class="card mb-4">
           <div class="card-header">
             <h5 class="mb-0">Doctors</h5>
@@ -157,7 +157,7 @@
                 <td>{{ appt.date }}</td>
                 <td>{{ appt.time }}</td>
                 <td class="text-end">
-                  <a href="/appointments/{{ appt.id }}/cancel" class="btn btn-outline-danger btn-sm rounded-pill">cancel</a>
+                  <a href="/patient/appointments/{{ appt.id }}/cancel" class="btn btn-outline-danger btn-sm rounded-pill">cancel</a>
                 </td>
               </tr>
               {% endfor %}
