@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Department of Oncology</title>
+  <title>Department home page</title>
   <link rel="stylesheet" href="/static/style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
@@ -10,7 +10,7 @@
     <div id="canvas">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Department of Oncology</a>
+          <a class="navbar-brand" href="#">Department of  {{ department.department_name }}</a>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
@@ -26,7 +26,7 @@
       
       <div id="content" class="container py-3">
         <!-- Department details -->
-        <h4>Details of Department: {{ department.name }}</h4>
+        <h4>Details of Department:</h4>
         <p class="mb-4">
           {{ department.description or "No description available for this department." }}
         </p>

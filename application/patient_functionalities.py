@@ -121,16 +121,42 @@ def book_appointment_fn():
         flash(message='Patient not found.', category='danger')
         return redirect(url_for('patient_dashboard_fn'))
 
+    # Check for existing cancelled appointment for this patient, doctor, date, and slot
+    existing_cancelled = Appointment.query.filter_by(
+        patient_id=int(pat.id), doctor_id=int(doctor_id), date=date, time=time, status='Cancelled'
+    ).first()
+    if existing_cancelled:
+        existing_cancelled.status = 'Booked'
+        doc_availability = DoctorAvailability.query.filter_by(doctor_id=int(doctor_id), date=date).first()
+        if doc_availability:
+          # Update availability
+          if slot_type == 'morning':
+              doc_availability.morning_time = False
+          else:
+              doc_availability.evening_time = False
+          db.session.commit()
+          flash(message='Appointment booked successfully!', category='success')
+        return redirect(url_for('patient_dashboard_fn'))
+
     new_appointment = Appointment(
         patient_id=int(pat.id), doctor_id=int(doctor_id), date=date, time=time, status='Booked'
     )
     doc_availability = DoctorAvailability.query.filter_by(doctor_id=int(doctor_id), date=date).first()
-    if doc_availability:
-        if slot_type == 'morning':
-            doc_availability.morning_time = False
-        else:
-            doc_availability.evening_time = False
-    
+    if not doc_availability:
+        flash(message='Doctor availability not found for selected date.', category='danger')
+        return redirect(url_for('patient_dashboard_fn'))
+    # Check slot availability
+    if slot_type == 'morning':
+        if not doc_availability.morning_time:
+            flash(message='Selected morning slot is not available.', category='danger')
+            return redirect(url_for('patient_dashboard_fn'))
+        doc_availability.morning_time = False
+    else:
+        if not doc_availability.evening_time:
+            flash(message='Selected evening slot is not available.', category='danger')
+            return redirect(url_for('patient_dashboard_fn'))
+        doc_availability.evening_time = False
+
     db.session.add(new_appointment)
     db.session.commit()
 
@@ -166,10 +192,11 @@ def cancel_appointment_fn_patient(appointment_id):
     appointment.status = 'Cancelled'
     doc_availability = DoctorAvailability.query.filter_by(doctor_id=int(appointment.doctor_id), date=appointment.date).first()
     if doc_availability:
+        # Mark the slot as available so others can book
         if appointment.time == '09:00 AM - 12:00 PM':
             doc_availability.morning_time = True
-        else:
+        elif appointment.time == '02:00 PM - 05:00 PM':
             doc_availability.evening_time = True
     db.session.commit()
-    flash(message='Appointment has been canceled.', category='success')
+    flash(message='Appointment has been canceled and slot is now available for others.', category='success')
     return redirect(url_for('patient_dashboard_fn'))
