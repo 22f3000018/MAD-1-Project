@@ -96,8 +96,15 @@ def cancel_appointment_fn(appointment_id):
         flash(message='Appointment not found', category='danger')
         return redirect(url_for('doctor_dashboard_fn'))
     appointment.status = 'Cancelled'
+    doc_availability = DoctorAvailability.query.filter_by(doctor_id=appointment.doctor_id, date=appointment.date).first()
+    if doc_availability:
+      # Update availability
+      if appointment.time.lower() == 'morning':
+          doc_availability.morning_time = True
+      else:
+          doc_availability.evening_time = True
     db.session.commit()
-    flash(message='Appointment has been canceled.', category='success')
+    flash(message='Appointment has been canceled and slot is now available for others.', category='success')
     return redirect(url_for('doctor_dashboard_fn'))
 
 from datetime import datetime, timedelta
