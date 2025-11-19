@@ -25,13 +25,16 @@ def admin_dashboard_fn():
                                                     Doctor.last_name.ilike(search_pattern))).all()
           
           # Search patients by first_name, last_name, ID, email, phone
-          list_of_patients = Patient.query.filter(or_(
-              Patient.first_name.ilike(search_pattern),
-              Patient.last_name.ilike(search_pattern),
-              Patient.email.ilike(search_pattern),
-              Patient.phone.ilike(search_pattern),
-              Patient.id == int(search_query)
-          )).all()
+          if search_query.isdigit():
+              # If search query is a number, match patient ID directly
+              list_of_patients = Patient.query.filter_by(id=int(search_query)).all()
+          else:
+              list_of_patients = Patient.query.filter(or_(
+                  Patient.first_name.ilike(search_pattern),
+                  Patient.last_name.ilike(search_pattern),
+                  Patient.email.ilike(search_pattern),
+                  Patient.phone.ilike(search_pattern)
+              )).all()
           future_appointments = []
           old_appointments = []
       else:
@@ -171,4 +174,34 @@ def delete_patient_fn(patient_id):
     db.session.delete(patient)
     db.session.commit()
     flash(message='Patient deleted successfully', category='success')
+    return redirect(url_for('admin_dashboard_fn'))
+
+@hospital_app.route('/blacklist-doctor/<int:doctor_id>', methods=['GET'])
+def blacklist_doctor_fn(doctor_id):
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    doctor = Doctor.query.filter_by(id=doctor_id).first()
+    if doctor is None:
+        flash(message='Doctor not found', category='danger')
+        return redirect(url_for('admin_dashboard_fn'))
+    
+    doctor.blacklisted = True
+    db.session.commit()
+    flash(message='Doctor has been blacklisted successfully', category='success')
+    return redirect(url_for('admin_dashboard_fn'))
+
+@hospital_app.route('/blacklist-patient/<int:patient_id>', methods=['GET'])
+def blacklist_patient_fn(patient_id):
+    if session.get('role') != 'admin':
+        flash(message='Please log in as admin to access this page', category='warning')
+        return redirect(url_for('hospital_home_and_login'))
+    patient = Patient.query.filter_by(id=patient_id).first()
+    if patient is None:
+        flash(message='Patient not found', category='danger')
+        return redirect(url_for('admin_dashboard_fn'))
+    
+    patient.blacklisted = True
+    db.session.commit()
+    flash(message='Patient has been blacklisted successfully', category='success')
     return redirect(url_for('admin_dashboard_fn'))

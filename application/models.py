@@ -24,6 +24,7 @@ class Doctor(db.Model):
     specialization = db.Column(db.String(100), nullable=False, index=True)
     experience_years = db.Column(db.Integer, db.CheckConstraint('experience_years >= 0'))
     gender = db.Column(db.String(10), db.CheckConstraint("gender IN ('male', 'female')"))
+    blacklisted = db.Column(db.Boolean, default=False)
 
     # Relationship
     department = db.relationship('Department', backref=db.backref('doctors', lazy='dynamic'))
@@ -49,6 +50,7 @@ class Patient(db.Model):
     phone = db.Column(db.String(15))
     age = db.Column(db.Integer, db.CheckConstraint('age > 0 AND age <= 150'))
     gender = db.Column(db.String(10), db.CheckConstraint("gender IN ('male', 'female')"))
+    blacklisted = db.Column(db.Boolean, default=False)
     
     def __repr__(self):
         return f"<Patient {self.username}>"

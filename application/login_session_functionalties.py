@@ -14,8 +14,8 @@ def hospital_home_and_login():
     username = request.form.get("login_form_Input1")
     password = request.form.get("login_form_Input2")
     admin = Admin.query.filter_by(username=username, password=password).first()
-    doc = Doctor.query.filter_by(username=username, password=password).first()
-    pat = Patient.query.filter_by(username=username, password=password).first()
+    doc = Doctor.query.filter_by(username=username, password=password, blacklisted=False).first()
+    pat = Patient.query.filter_by(username=username, password=password, blacklisted=False).first()
     
     if admin:
         session['username'] = username
