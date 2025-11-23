@@ -1,5 +1,4 @@
 from .database import db
-from sqlalchemy import event
 
 class Admin(db.Model):
     __tablename__ = 'admin'
@@ -75,7 +74,7 @@ class Appointment(db.Model):
     patient = db.relationship('Patient', backref=db.backref('appointments', lazy='dynamic', cascade='all, delete-orphan'))
     doctor = db.relationship('Doctor', backref=db.backref('appointments', lazy='dynamic', cascade='all, delete-orphan'))
     
-    # Unique constraint to prevent double booking
+    # Unique constraint
     __table_args__ = (
         db.UniqueConstraint('doctor_id', 'date', 'time', name='unique_doctor_appointment'),
         db.CheckConstraint("status IN ('Booked', 'Completed', 'Cancelled')", name='valid_status')

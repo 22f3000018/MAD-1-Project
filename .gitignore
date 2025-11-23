@@ -3,9 +3,6 @@
 *.pyo
 application/__pycache__/*.pyc
 
-# Ignore database files
-*.db
-*.sqlite3
 
 .venv/
 env/

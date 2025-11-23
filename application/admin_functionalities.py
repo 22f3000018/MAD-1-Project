@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, session, url_for
+from flask import render_template, request, flash, redirect, session, url_for
 from flask import current_app as hospital_app
 from application.models import Admin, Doctor, Patient, PatientHistory, Appointment, DoctorAvailability
 from application.database import db
@@ -19,14 +19,11 @@ def admin_dashboard_fn():
       if search_query:
           search_pattern = f'%{search_query}%'
           
-          # Search doctors by username, first_name, last_name
           list_of_doctors = Doctor.query.filter(or_(Doctor.username.ilike(search_pattern),
                                                     Doctor.first_name.ilike(search_pattern),
                                                     Doctor.last_name.ilike(search_pattern))).all()
-          
-          # Search patients by first_name, last_name, ID, email, phone
           if search_query.isdigit():
-              # If search query is a number, match patient ID directly
+              # search by patient ID
               list_of_patients = Patient.query.filter_by(id=int(search_query)).all()
           else:
               list_of_patients = Patient.query.filter(or_(
@@ -42,7 +39,7 @@ def admin_dashboard_fn():
           list_of_doctors = Doctor.query.all()
           list_of_patients = Patient.query.all()
 
-          # Get only future appointments (date is stored as string 'DD-MM-YYYY')
+          # future appointments
           from datetime import datetime
           today = datetime.today().date()
           future_appointments = [appt for appt in Appointment.query.all() 

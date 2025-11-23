@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, flash, redirect, session, url_for
+from flask import render_template, request, flash, redirect, session, url_for
 from flask import current_app as hospital_app
-from application.models import Admin, Doctor, Patient, PatientHistory, Appointment, Department, DoctorAvailability
+from application.models import Doctor, Patient, PatientHistory, Appointment, Department, DoctorAvailability
 from application.database import db
 
 
