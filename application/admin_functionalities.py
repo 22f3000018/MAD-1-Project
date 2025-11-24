@@ -19,8 +19,7 @@ def admin_dashboard_fn():
       if search_query:
           search_pattern = f'%{search_query}%'
           
-          list_of_doctors = Doctor.query.filter(or_(Doctor.username.ilike(search_pattern),
-                                                    Doctor.first_name.ilike(search_pattern),
+          list_of_doctors = Doctor.query.filter(or_(Doctor.first_name.ilike(search_pattern),
                                                     Doctor.last_name.ilike(search_pattern))).all()
           if search_query.isdigit():
               # search by patient ID
